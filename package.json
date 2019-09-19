@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "rimraf dist && rollup -c rollup.config.js",
-    "prepare": "cd components && yarn install",
+    "prepare": "cd components && npm install",
     "start:build": "cd dist && es-dev-server --open"
   },
   "bugs": {

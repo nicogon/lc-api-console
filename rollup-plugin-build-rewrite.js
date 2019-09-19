@@ -33,9 +33,12 @@ class ElementProcessor {
     scripts.forEach((script) => {
       const src = getAttribute(script, 'src');
       if (src) {
-        result += `addScript('${src}');`;
+        result += `addScript(basePath+'${src}');`;
       } else {
-        const content = getTextContent(script);
+        let content = getTextContent(script);
+        content = content.replace(/"(.\/|-|[a-z]|[0-9]|\.)*(.)js"/g, function (x) {
+          return `basePath + ${x.replace('./','')}`;
+        });
         result += 'try{';
         result += content + '';
         result += '}catch(_){}';
@@ -46,6 +49,8 @@ class ElementProcessor {
 
   _noModuleScriptLoaderTemplate() {
     return `
+    const absoluteUrl = (document.currentScript && document.currentScript.src) || document.getElementsByTagName('script')[document.getElementsByTagName('script').length - 1].src;
+    const basePath = absoluteUrl.replace('apic-import.js', '');
     function addScript(src) {
       var s = document.createElement('script');
       s.setAttribute('nomodule', '');
